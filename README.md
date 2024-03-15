@@ -10,7 +10,7 @@
 
 Old TJAPlayer3-Develop-BSQ, a spiritual successor to TJAPlayer3.
 
-- Current version： v0.5.4
+- Current version： v0.6.0
 
 - Discord : https://discord.gg/aA8scTvZ6B
 
