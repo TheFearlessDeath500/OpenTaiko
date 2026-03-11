@@ -13,7 +13,7 @@ class HScenePreset {
 			presetSection = "Regular";
 		}
 
-		Dictionary<string, DBSkinPreset.SkinScene> _ps = [];
+		object _ps = null;
 
 		switch (presetSection) {
 			case "Regular":
@@ -28,28 +28,40 @@ class HScenePreset {
 			case "AI":
 				_ps = OpenTaiko.Skin.Game_SkinScenes.AI;
 				break;
+			default:
+				break;
 		};
 
-		bool sectionIsValid = _ps.Count > 0;
+		bool sectionIsValid = _ps != null ? ((Dictionary<string, DBSkinPreset.SkinScene>)_ps).Count > 0 : false;
 
 #if DEBUG
 		if (!string.IsNullOrWhiteSpace(ImGuiDebugWindow.OverrideBGPreset))
-			return _ps.TryGetValue(ImGuiDebugWindow.OverrideBGPreset, out var value) ? value : null;
+			return ((Dictionary<string, DBSkinPreset.SkinScene>)_ps).TryGetValue(ImGuiDebugWindow.OverrideBGPreset, out var value) ? value : null;
 #endif
-		if (sectionIsValid && _ps.TryGetValue(OpenTaiko.TJA?.scenePreset ?? OpenTaiko.stageSongSelect.rChoosenSong.strScenePreset ?? "", out var result_song)) {
-			return result_song;
-		}
-		else if (sectionIsValid && _ps.TryGetValue(OpenTaiko.stageSongSelect.rChoosenSong.strScenePreset ?? "", out var result_box)) {
-			return result_box;
-		}
-		else if (sectionIsValid && _ps.TryGetValue("", out var result_fallback)) {
-			return result_fallback;
-		}
-		else if (sectionIsValid) {
+		var preset = (sectionIsValid
+					  && OpenTaiko.stageSongSelect.rChoosenSong.strScenePreset != null
+					  && ((Dictionary<string, DBSkinPreset.SkinScene>)_ps).ContainsKey(OpenTaiko.stageSongSelect.rChoosenSong.strScenePreset))
+			? ((Dictionary<string, DBSkinPreset.SkinScene>)_ps)[OpenTaiko.stageSongSelect.rChoosenSong.strScenePreset]
+			: null;
+
+		if (sectionIsValid
+			&& OpenTaiko.TJA.scenePreset != null
+			&& ((Dictionary<string, DBSkinPreset.SkinScene>)_ps).ContainsKey(OpenTaiko.TJA.scenePreset)) // If currently selected song has valid SCENEPRESET metadata within TJA
+		{
+			preset = ((Dictionary<string, DBSkinPreset.SkinScene>)_ps)[OpenTaiko.TJA.scenePreset];
+		} else if (sectionIsValid
+				   && OpenTaiko.stageSongSelect.rChoosenSong.strScenePreset != null
+				   && ((Dictionary<string, DBSkinPreset.SkinScene>)_ps).ContainsKey(OpenTaiko.stageSongSelect.rChoosenSong.strScenePreset)) {
+			preset = ((Dictionary<string, DBSkinPreset.SkinScene>)_ps)[OpenTaiko.stageSongSelect.rChoosenSong.strScenePreset];
+		} else if (sectionIsValid
+				   && ((Dictionary<string, DBSkinPreset.SkinScene>)_ps).ContainsKey("")) {
+			preset = ((Dictionary<string, DBSkinPreset.SkinScene>)_ps)[""];
+		} else if (sectionIsValid) {
+			var cstps = (Dictionary<string, DBSkinPreset.SkinScene>)_ps;
 			Random rand = new Random();
-			return _ps.ElementAt(rand.Next(0, _ps.Count)).Value;
+			preset = cstps.ElementAt(rand.Next(0, cstps.Count)).Value;
 		}
 
-		return null;
+		return preset;
 	}
 }

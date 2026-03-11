@@ -449,11 +449,6 @@ internal class CSongs管理 {
 
 
 				c曲リストノード.childrenList = new List<CSongListNode>();
-				// OPTK Shortcut File
-				foreach (string shortcutpath in Directory.GetFiles(infoDir.FullName, "*.optksc", SearchOption.TopDirectoryOnly)) {
-					c曲リストノード.shortcutIds.AddRange(File.ReadAllLines(shortcutpath));
-				}
-
 				listノードリスト.Add(c曲リストノード);
 				if (OpenTaiko.ConfigIni.bOutputSongSearchLog) {
 					Trace.TraceInformation("box.def検出 : {0}", infoDir.FullName + @$"{Path.DirectorySeparatorChar}box.def");

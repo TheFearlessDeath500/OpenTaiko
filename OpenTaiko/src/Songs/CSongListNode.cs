@@ -76,8 +76,6 @@ internal class CSongListNode {
 
 	// Unique id
 	public CSongUniqueID uniqueId;
-	public List<string> shortcutIds = [];
-	public bool shortcutIsParsed;
 
 	public int nDanTick = 0;
 	public Color cDanTickColor = Color.White;

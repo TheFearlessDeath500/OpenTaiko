@@ -11,10 +11,6 @@ internal class CLocalizationData {
 		Strings = new Dictionary<string, string>();
 	}
 
-	public string[] GetAllStrings() {
-		return Strings.Values.ToArray();
-	}
-
 	public string GetString(string defaultsDefault) {
 		string _lang = CLangManager.fetchLang();
 		if (Strings.ContainsKey(_lang))

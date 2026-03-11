@@ -244,13 +244,13 @@ internal class CSongDict {
 		List<CSongListNode> childList = new List<CSongListNode>();
 
 		foreach (CSongListNode nodeT in nodes.Values) {
-			string[] name = type switch {
-				ETitleType.Title => nodeT.ldTitle.GetAllStrings(),
-				ETitleType.Subtitle => nodeT.ldSubtitle.GetAllStrings(),
-				ETitleType.Charter => [nodeT.strMaker],
-				_ => nodeT.ldTitle.GetAllStrings()
+			string name = type switch {
+				ETitleType.Title => nodeT.ldTitle.GetString(""),
+				ETitleType.Subtitle => nodeT.ldSubtitle.GetString(""),
+				ETitleType.Charter => nodeT.strMaker,
+				_ => nodeT.ldTitle.GetString("")
 			};
-			if (name.Any(item => item.Contains(text, StringComparison.InvariantCultureIgnoreCase))) {
+			if (name.Contains(text, StringComparison.InvariantCultureIgnoreCase)) {
 				var node = tReadaptChildNote(parent, nodeT);
 				if (node != null) childList.Add(node);
 			}
@@ -263,26 +263,6 @@ internal class CSongDict {
 						break;
 					}
 				}
-			}
-		}
-
-		// Generate back buttons
-
-		string favPath = "./" + parent.ldTitle.GetString("") + "/";
-
-		tReinsertBackButtons(parent, childList, favPath);
-
-		return childList;
-	}
-
-	public static List<CSongListNode> tFetchSongsByIds(CSongListNode parent) {
-		if (parent.shortcutIds.Count == 0) return new();
-		List<CSongListNode> childList = new List<CSongListNode>();
-
-		foreach (CSongListNode nodeT in nodes.Values) {
-			if (parent.shortcutIds.Contains(nodeT.tGetUniqueId())) {
-				var node = tReadaptChildNote(parent, nodeT);
-				if (node != null) childList.Add(node);
 			}
 		}
 
